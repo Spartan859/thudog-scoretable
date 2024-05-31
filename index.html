@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Page</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .score-line {
+            font-size: 48px;
+            font-weight: bold;
+        }
+        .half-time {
+            font-size: 32px;
+            margin: 10px 0;
+        }
+        .red {
+            color: red;
+        }
+        .black {
+            color: black;
+        }
+        .blue {
+            color: blue;
+        }
+        .timer {
+            font-size: 78px;
+            margin: 0px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="score-line">
+    <span id="teamA" class="red">第A组</span> 
+    <span id="scoreA" class="red">5</span> 
+    <span class="blue">:</span> 
+    <span id="scoreB" class="black">5</span> 
+    <span id="teamB" class="black">第B组</span>
+</div>
+
+<div class="half-time" id="halfTime">上半场</div>
+
+<div class="timer" id="timer">06:00</div>
+
+<script>
+    function updateDisplay() {
+        const teamA = localStorage.getItem('teamA') || '第A组';
+        const rewardA = parseFloat(localStorage.getItem('rewardA')) || 0;
+        const penaltyA = parseFloat(localStorage.getItem('penaltyA')) || 0;
+        const scoreA = 5 + rewardA - penaltyA;
+
+        const teamB = localStorage.getItem('teamB') || '第B组';
+        const rewardB = parseFloat(localStorage.getItem('rewardB')) || 0;
+        const penaltyB = parseFloat(localStorage.getItem('penaltyB')) || 0;
+        const scoreB = 5 + rewardB - penaltyB;
+
+        const teamAClass = localStorage.getItem('teamAClass') || 'red';
+        const scoreAClass = localStorage.getItem('scoreAClass') || 'red';
+        const scoreBClass = localStorage.getItem('scoreBClass') || 'black';
+        const teamBClass = localStorage.getItem('teamBClass') || 'black';
+        const halfTimeText = localStorage.getItem('halfTimeText') || '上半场';
+        const storedTime = localStorage.getItem('time');
+
+        document.getElementById('teamA').textContent = teamA;
+        document.getElementById('scoreA').textContent = scoreA.toFixed(1);
+        document.getElementById('scoreB').textContent = scoreB.toFixed(1);
+        document.getElementById('teamB').textContent = teamB;
+        document.getElementById('teamA').className = teamAClass;
+        document.getElementById('scoreA').className = scoreAClass;
+        document.getElementById('scoreB').className = scoreBClass;
+        document.getElementById('teamB').className = teamBClass;
+        document.getElementById('halfTime').textContent = halfTimeText;
+
+        if (storedTime) {
+            const time = parseInt(storedTime);
+            const minutes = String(Math.floor(time / 60)).padStart(2, '0');
+            const seconds = String(time % 60).padStart(2, '0');
+            document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+        }
+    }
+
+    window.onload = function() {
+        updateDisplay();
+        setInterval(updateDisplay, 100); // 每秒更新一次
+    }
+</script>
+
+</body>
+</html>
