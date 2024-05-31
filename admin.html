@@ -85,7 +85,7 @@
             <input type="number" class="form-control mb-2" id="penaltyAInput" placeholder="Penalty A" min="0" step="0.2" oninput="updateSettings()">
         </div>
         <div class="col-md-1">
-            <button class="btn btn-danger mb-2" onclick="incrementPenalty('A')">+0.2</button>
+            <button class="btn btn-danger mb-2" onclick="incrementPenalty('A')">-0.2</button>
         </div>
     </div>
     <div class="row">
@@ -99,25 +99,36 @@
             <input type="number" class="form-control mb-2" id="penaltyBInput" placeholder="Penalty B" min="0" step="0.2" oninput="updateSettings()">
         </div>
         <div class="col-md-1">
-            <button class="btn btn-danger mb-2" onclick="incrementPenalty('B')">+0.2</button>
+            <button class="btn btn-danger mb-2" onclick="incrementPenalty('B')">-0.2</button>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4">
-            <input type="number" class="form-control mb-2" id="timeInput" placeholder="Time (minutes)" min="0" oninput="setTime()">
+        <div class="col-md-2">
+            <input type="number" class="form-control mb-2" id="minutesInput" placeholder="Minutes" min="0">
+        </div>
+        <div class="col-md-2">
+            <input type="number" class="form-control mb-2" id="secondsInput" placeholder="Seconds" min="0" max="59">
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-warning mb-2" onclick="setTime()">设置时间</button>
         </div>
     </div>
 </div>
 
+<audio id="rewardSound" src="reward.mp3" preload="auto"></audio>
+<audio id="penaltySound" src="penalty.mp3" preload="auto"></audio>
+<audio id="finalSound" src="final.mp3" preload="auto"></audio>
+
 <script>
     let timer;
-    let isRunning = true;
+    let isRunning = false;
     let time = 360; // 6 minutes in seconds
 
     function startTimer() {
         timer = setInterval(() => {
             if (time <= 0) {
                 clearInterval(timer);
+                document.getElementById('finalSound').play();
                 return;
             }
             time--;
@@ -172,18 +183,21 @@
     function incrementReward(team) {
         const input = document.getElementById(`reward${team}Input`);
         input.value = parseInt(input.value || 0) + 1;
+        document.getElementById('rewardSound').play();
         updateSettings();
     }
 
     function incrementPenalty(team) {
         const input = document.getElementById(`penalty${team}Input`);
         input.value = (parseFloat(input.value || 0) + 0.2).toFixed(1);
+        document.getElementById('penaltySound').play();
         updateSettings();
     }
 
     function setTime() {
-        const minutes = parseInt(document.getElementById('timeInput').value || 6);
-        time = minutes * 60;
+        const minutes = parseInt(document.getElementById('minutesInput').value || 6);
+        const seconds = parseInt(document.getElementById('secondsInput').value || 0);
+        time = (minutes * 60) + seconds;
         updateTimerDisplay();
         localStorage.setItem('time', time);
     }
@@ -197,6 +211,8 @@
         localStorage.setItem('penaltyA', 0);
         localStorage.setItem('rewardB', 0);
         localStorage.setItem('penaltyB', 0);
+
+        setTime();
         updateSettings();
     }
 
@@ -267,7 +283,6 @@
 
     window.onload = function() {
         loadSettings();
-        startTimer();
     }
 </script>
 
