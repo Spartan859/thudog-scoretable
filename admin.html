@@ -60,7 +60,7 @@
 <div class="timer" id="timer">06:00</div>
 
 <div class="buttons">
-    <button class="btn btn-primary" onclick="toggleTimer()">暂停/继续</button>
+    <button id="toggleButton" class="btn btn-primary" onclick="toggleTimer()">暂停</button>
     <button class="btn btn-secondary" onclick="toggleColors()">切换颜色</button>
     <button class="btn btn-danger" onclick="resetScores()">复位</button>
 </div>
@@ -129,6 +129,8 @@
             if (time <= 0) {
                 clearInterval(timer);
                 document.getElementById('finalSound').play();
+                isRunning = false;
+                updateToggleButton();
                 return;
             }
             time--;
@@ -144,12 +146,30 @@
     }
 
     function toggleTimer() {
-        if (isRunning) {
-            clearInterval(timer);
-        } else {
-            startTimer();
-        }
+        if (time<=0) return;
+        
         isRunning = !isRunning;
+
+        if (isRunning) {
+            startTimer();
+        } else {
+            clearInterval(timer);
+        }
+
+        updateToggleButton();
+    }
+
+    function updateToggleButton() {
+        const toggleButton = document.getElementById('toggleButton');
+        if (isRunning) {
+            toggleButton.textContent = '暂停';
+            toggleButton.classList.remove('btn-success');
+            toggleButton.classList.add('btn-primary');
+        } else {
+            toggleButton.textContent = '继续';
+            toggleButton.classList.remove('btn-primary');
+            toggleButton.classList.add('btn-success');
+        }
     }
 
     function toggleColors() {
@@ -197,7 +217,7 @@
     function setTime() {
         const minutes = parseInt(document.getElementById('minutesInput').value || 6);
         const seconds = parseInt(document.getElementById('secondsInput').value || 0);
-        time = (minutes * 60) + seconds;
+        time = minutes * 60 + seconds;
         updateTimerDisplay();
         localStorage.setItem('time', time);
     }
@@ -279,6 +299,8 @@
         document.getElementById('teamBInput').value = teamB;
         document.getElementById('rewardBInput').value = rewardB;
         document.getElementById('penaltyBInput').value = penaltyB;
+
+        updateToggleButton();
     }
 
     window.onload = function() {
