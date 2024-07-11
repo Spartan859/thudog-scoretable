@@ -81,6 +81,7 @@
         document.getElementById('scoreB').className = scoreBClass;
         document.getElementById('teamB').className = teamBClass;
         document.getElementById('halfTime').textContent = halfTimeText;
+        document.getElementById('timer').style.color = localStorage.getItem('timeColor')||'red';
 
         if (storedTime) {
             const time = parseInt(storedTime);

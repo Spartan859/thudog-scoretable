@@ -151,8 +151,13 @@
         isRunning = !isRunning;
 
         if (isRunning) {
+            localStorage.setItem('timeColor', 'black');
+            document.getElementById('timer').style.color = 'black';
             startTimer();
         } else {
+            //set timer text to red font
+            localStorage.setItem('timeColor', 'red');
+            document.getElementById('timer').style.color = 'red';
             clearInterval(timer);
         }
 
